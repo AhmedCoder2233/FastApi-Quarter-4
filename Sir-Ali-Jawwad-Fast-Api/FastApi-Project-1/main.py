@@ -31,16 +31,14 @@ class TaskCreate(BaseModel):
     status: str
     due_date: date
     user_id: int
-
+    @validator("due_date")
+    def check_due_date(cls, value):
+        if value < date.today():
+            raise ValueError("Due date cannot be in the past.")
+        return value
 
 class TaskStatusUpdate(BaseModel):
     status: str
-
-@validator("due_date")
-def check_due_date(cls, value):
-    if value < date.today():
-        raise ValueError("Due date cannot be in the past.")
-    return value
 
 @app.post("/users/")
 def createUser(user:UserCreate):
